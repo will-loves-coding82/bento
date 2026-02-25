@@ -9,6 +9,9 @@ import tailwindcss from '@tailwindcss/vite'
 import netlify from '@netlify/vite-plugin-tanstack-start'
 
 const config = defineConfig({
+  ssr: {
+    noExternal: ['@convex-dev/better-auth'],
+  },
   plugins: [
     devtools(),
     netlify(),
@@ -16,6 +19,7 @@ const config = defineConfig({
     tailwindcss(),
     tanstackStart(),
     viteReact(),
+    
   ],
 })
 

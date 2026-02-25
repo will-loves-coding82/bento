@@ -1,8 +1,16 @@
 @import "tailwindcss";
+@import "@heroui/styles";
+
+@font-face {
+  font-family: 'chelsea';
+  src: url("./fonts/ChelseaMarket-Regular.woff2") format("woff2");
+}
+
 
 body {
+  overflow: hidden;
   @apply m-0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+  font-family: "chelsea", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -12,4 +20,17 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.react-flow {
+  --xy-background-pattern-dots-color-default: rgb(239, 239, 239) !important;
+}
+
+
+/* ...or add this class to an element */
+.polka {
+  background-image: radial-gradient(rgb(247, 247, 247) 10%, transparent 10%);
+  background-position: 12px 12px;
+  background-size: 24px 24px;
+  background-color: rgb(255, 255, 255);
 }
