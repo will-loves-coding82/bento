@@ -1,67 +1,43 @@
 import { Link } from '@tanstack/react-router'
+import { Button, Chip, Skeleton } from '@heroui/react';
 import '../styles.css';
-import { useState } from 'react'
-import { Home, Menu, X } from 'lucide-react'
-import { Button } from '@heroui/react';
+import {
+  Authenticated,
+  Unauthenticated,
+  AuthLoading
+} from "convex/react";
 
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <>
-      <header className="p-4 z-1000 bg-white fixed w-screen flex justify-between items-center border-b-2 border-gray-200 text-white shadow-md">
-        {/* <button
-          onClick={() => setIsOpen(true)}
-          className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
-          aria-label="Open menu"
-        >
-          <Menu size={24} />
-        </button> */}
-        <h1 className="text-2xl text-black font-semibold">
-          <Link to="/">bento</Link>
-        </h1>
+    <nav className="px-4 z-1000 h-[64px] bg-white fixed w-screen flex justify-between items-center text-white shadow-md">
+      <Link to="/" className="font-[chelsea] text-2xl text-black font-semibold">bento</Link>
 
-        <div className="flex flex-wrap gap-2">
-          <Button className="rounded-md bg-black">login</Button>
-          <Button className="rounded-md">sign up</Button>
-        </div>
-      </header>
+      <div className="flex flex-wrap gap-2">
+        <AuthLoading>
+          <div className="w-54">
+            <Skeleton animationType="pulse" className="bg-gray-200 h-4 rounded-lg" />
+          </div>
+        </AuthLoading>
 
-      <aside
-        className={`fixed top-0 left-0 h-full w-80 bg-gray-900 text-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <h2 className="text-xl font-bold">Navigation</h2>
-          <button
-            onClick={() => setIsOpen(false)}
-            className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
-            aria-label="Close menu"
-          >
-            <X size={24} />
-          </button>
-        </div>
+        <Authenticated>
+          <span className="flex items-center gap-4">
+            <Chip variant="soft" color="success" className="h-fit text-green-400">logged in</Chip>
+            <Button className="rounded-lg font-[chelsea]">
+              <Link to="/dashboard/parents">dashboard</Link>
+            </Button>
+          </span>
+        </Authenticated>
 
-        <nav className="flex-1 p-4 overflow-y-auto">
-          <Link
-            to="/"
-            onClick={() => setIsOpen(false)}
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <Home size={20} />
-            <span className="font-medium">Home</span>
-          </Link>
-
-          {/* Demo Links Start */}
-
-          {/* Demo Links End */}
-        </nav>
-      </aside>
-    </>
+        <Unauthenticated>
+          <Button className="rounded-lg bg-black font-[chelsea]">
+            <Link to="/auth/login">login</Link>
+          </Button>
+          <Button className="rounded-lg font-[chelsea]">
+            <Link to="/auth/signup">signup</Link>
+          </Button>
+        </Unauthenticated>
+      </div>
+    </nav>
   )
 }

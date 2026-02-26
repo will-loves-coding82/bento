@@ -68,6 +68,8 @@ import appCss from '@/styles.css?url'
 import { getToken } from '@/lib/auth-server'
 import { authClient } from '@/lib/auth-client'
 import Header from '@/components/Header'
+import { Toast } from '@heroui/react'
+
 
 
 // Get auth information for SSR using available cookies
@@ -115,16 +117,18 @@ export const Route = createRootRouteWithContext<{
 
 function RootComponent() {
   const context = useRouteContext({ from: Route.id }) 
+  
   return (
     <ConvexBetterAuthProvider
       client={context.convexQueryClient.convexClient}
       authClient={authClient}
       initialToken={context.token}
     >
+      <Toast.Provider />
       <RootDocument>
         <Header />
         <Outlet />
-      </RootDocument>
+\      </RootDocument>
     </ConvexBetterAuthProvider>
   )
 }
@@ -135,7 +139,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="bg-neutral-950 text-neutral-50">
+      <body>
         {children}
         <Scripts />
       </body>

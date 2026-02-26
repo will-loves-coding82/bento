@@ -6,12 +6,23 @@ import { components } from './_generated/api'
 import { query } from './_generated/server'
 import type { GenericCtx } from '@convex-dev/better-auth'
 import type { DataModel } from './_generated/dataModel'
+import { polar, checkout, portal, usage, webhooks } from "@polar-sh/better-auth"; 
+import { Polar } from "@polar-sh/sdk"; 
 
 const siteUrl = process.env.SITE_URL!
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
 export const authComponent = createClient<DataModel>(components.betterAuth)
+
+const polarClient = new Polar({ 
+    accessToken: process.env.SANDBOX_POLAR_ACCESS_TOKEN, 
+    // Use 'sandbox' if you're using the Polar Sandbox environment
+    // Remember that access tokens, products, etc. are completely separated between environments.
+    // Access tokens obtained in Production are for instance not usable in the Sandbox environment.
+    server: 'sandbox'
+}); 
+
 
 export const createAuth = (ctx: GenericCtx<DataModel>) => {
   return betterAuth({
@@ -22,9 +33,37 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
       enabled: true,
       requireEmailVerification: false,
     },
+    socialProviders: {
+        // google: {
+        //     prompt: "select_account consent",
+        //     accessType: "offline",
+        //     clientId: process.env.GOOGLE_OAUTH_KEY!,
+        //     clientSecret: process.env.GOOGLE_OAUTH_SECRET!
+        // }
+    },
     plugins: [
       // The Convex plugin is required for Convex compatibility
       convex({ authConfig }),
+      polar({
+        client: polarClient,
+        createCustomerOnSignUp: true,
+        use:[
+            checkout({
+                products: [
+                    {
+                        productId: process.env.POLAR_PRODUCT_ID!,
+                        slug: "pro"
+                    }
+                ],
+                successUrl: "https://localhost:3000/subscriptions/success?checkout_id={CHECKOUT_ID}"
+            }),
+            portal(),
+            usage(),
+            webhooks({ 
+                secret: process.env.POLAR_WEBHOOK_SECRET!,
+            }),
+        ]
+      })
     ],
   })
 }
