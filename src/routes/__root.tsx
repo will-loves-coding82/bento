@@ -65,11 +65,11 @@ import { ConvexBetterAuthProvider } from '@convex-dev/better-auth/react'
 import type { ConvexQueryClient } from '@convex-dev/react-query'
 import type { QueryClient } from '@tanstack/react-query'
 import appCss from '@/styles.css?url'
-import { getToken } from '@/lib/auth-server'
-import { authClient } from '@/lib/auth-client'
-import Header from '@/components/Header'
+import { getToken } from 'convex/auth/auth-server'
+import { authClient } from 'convex/auth/auth-client'
 import { Toast } from '@heroui/react'
-
+import { useThemeStore } from '@/store/themeStore'
+import { useEffect } from 'react'
 
 
 // Get auth information for SSR using available cookies
@@ -126,16 +126,21 @@ function RootComponent() {
     >
       <Toast.Provider />
       <RootDocument>
-        <Header />
         <Outlet />
-\      </RootDocument>
+      </RootDocument>
     </ConvexBetterAuthProvider>
   )
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const theme = useThemeStore((s) => s.theme)
+  useEffect(() => {
+    document.documentElement.classList.remove('light', 'dark')
+    document.documentElement.classList.add(theme)
+  }, [theme])
+
   return (
-    <html lang="en" className="dark">
+    <html lang="en" data-theme={theme}>
       <head>
         <HeadContent />
       </head>

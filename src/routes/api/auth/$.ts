@@ -1,4 +1,4 @@
-import { handler } from '@/lib/auth-server'
+import { handler } from 'convex/auth/auth-server'
 import { createFileRoute } from '@tanstack/react-router'
 
 
@@ -10,3 +10,4 @@ export const Route = createFileRoute('/api/auth/$')({
     },
   },
 })
+

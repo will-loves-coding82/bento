@@ -10,21 +10,32 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DashboardParentsIndexRouteImport } from './routes/dashboard/parents/index'
+import { Route as GroupsLayoutRouteImport } from './routes/groups/_layout'
+import { Route as GroupsLayoutIndexRouteImport } from './routes/groups/_layout/index'
 import { Route as AuthSignupIndexRouteImport } from './routes/auth/signup/index'
 import { Route as AuthLoginIndexRouteImport } from './routes/auth/login/index'
 import { Route as AuthJoinIndexRouteImport } from './routes/auth/join/index'
+import { Route as GroupsLayoutCreateRouteImport } from './routes/groups/_layout/create'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as DashboardParentsGroupIdLayoutRouteImport } from './routes/dashboard/parents/$groupId/_layout'
+import { Route as DashboardParentsGroupIdLayoutIndexRouteImport } from './routes/dashboard/parents/$groupId/_layout/index'
+import { Route as DashboardParentsGroupIdLayoutSettingsRouteImport } from './routes/dashboard/parents/$groupId/_layout/settings'
+import { Route as DashboardParentsGroupIdLayoutBillingRouteImport } from './routes/dashboard/parents/$groupId/_layout/billing'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardParentsIndexRoute = DashboardParentsIndexRouteImport.update({
-  id: '/dashboard/parents/',
-  path: '/dashboard/parents/',
+const GroupsLayoutRoute = GroupsLayoutRouteImport.update({
+  id: '/groups/_layout',
+  path: '/groups',
   getParentRoute: () => rootRouteImport,
+} as any)
+const GroupsLayoutIndexRoute = GroupsLayoutIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => GroupsLayoutRoute,
 } as any)
 const AuthSignupIndexRoute = AuthSignupIndexRouteImport.update({
   id: '/auth/signup/',
@@ -41,71 +52,133 @@ const AuthJoinIndexRoute = AuthJoinIndexRouteImport.update({
   path: '/auth/join/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GroupsLayoutCreateRoute = GroupsLayoutCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => GroupsLayoutRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardParentsGroupIdLayoutRoute =
+  DashboardParentsGroupIdLayoutRouteImport.update({
+    id: '/dashboard/parents/$groupId/_layout',
+    path: '/dashboard/parents/$groupId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DashboardParentsGroupIdLayoutIndexRoute =
+  DashboardParentsGroupIdLayoutIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => DashboardParentsGroupIdLayoutRoute,
+  } as any)
+const DashboardParentsGroupIdLayoutSettingsRoute =
+  DashboardParentsGroupIdLayoutSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => DashboardParentsGroupIdLayoutRoute,
+  } as any)
+const DashboardParentsGroupIdLayoutBillingRoute =
+  DashboardParentsGroupIdLayoutBillingRouteImport.update({
+    id: '/billing',
+    path: '/billing',
+    getParentRoute: () => DashboardParentsGroupIdLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/groups': typeof GroupsLayoutRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/groups/create': typeof GroupsLayoutCreateRoute
   '/auth/join/': typeof AuthJoinIndexRoute
   '/auth/login/': typeof AuthLoginIndexRoute
   '/auth/signup/': typeof AuthSignupIndexRoute
-  '/dashboard/parents/': typeof DashboardParentsIndexRoute
+  '/groups/': typeof GroupsLayoutIndexRoute
+  '/dashboard/parents/$groupId': typeof DashboardParentsGroupIdLayoutRouteWithChildren
+  '/dashboard/parents/$groupId/billing': typeof DashboardParentsGroupIdLayoutBillingRoute
+  '/dashboard/parents/$groupId/settings': typeof DashboardParentsGroupIdLayoutSettingsRoute
+  '/dashboard/parents/$groupId/': typeof DashboardParentsGroupIdLayoutIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/groups/create': typeof GroupsLayoutCreateRoute
   '/auth/join': typeof AuthJoinIndexRoute
   '/auth/login': typeof AuthLoginIndexRoute
   '/auth/signup': typeof AuthSignupIndexRoute
-  '/dashboard/parents': typeof DashboardParentsIndexRoute
+  '/groups': typeof GroupsLayoutIndexRoute
+  '/dashboard/parents/$groupId/billing': typeof DashboardParentsGroupIdLayoutBillingRoute
+  '/dashboard/parents/$groupId/settings': typeof DashboardParentsGroupIdLayoutSettingsRoute
+  '/dashboard/parents/$groupId': typeof DashboardParentsGroupIdLayoutIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/groups/_layout': typeof GroupsLayoutRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/groups/_layout/create': typeof GroupsLayoutCreateRoute
   '/auth/join/': typeof AuthJoinIndexRoute
   '/auth/login/': typeof AuthLoginIndexRoute
   '/auth/signup/': typeof AuthSignupIndexRoute
-  '/dashboard/parents/': typeof DashboardParentsIndexRoute
+  '/groups/_layout/': typeof GroupsLayoutIndexRoute
+  '/dashboard/parents/$groupId/_layout': typeof DashboardParentsGroupIdLayoutRouteWithChildren
+  '/dashboard/parents/$groupId/_layout/billing': typeof DashboardParentsGroupIdLayoutBillingRoute
+  '/dashboard/parents/$groupId/_layout/settings': typeof DashboardParentsGroupIdLayoutSettingsRoute
+  '/dashboard/parents/$groupId/_layout/': typeof DashboardParentsGroupIdLayoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/groups'
     | '/api/auth/$'
+    | '/groups/create'
     | '/auth/join/'
     | '/auth/login/'
     | '/auth/signup/'
-    | '/dashboard/parents/'
+    | '/groups/'
+    | '/dashboard/parents/$groupId'
+    | '/dashboard/parents/$groupId/billing'
+    | '/dashboard/parents/$groupId/settings'
+    | '/dashboard/parents/$groupId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/api/auth/$'
+    | '/groups/create'
     | '/auth/join'
     | '/auth/login'
     | '/auth/signup'
-    | '/dashboard/parents'
+    | '/groups'
+    | '/dashboard/parents/$groupId/billing'
+    | '/dashboard/parents/$groupId/settings'
+    | '/dashboard/parents/$groupId'
   id:
     | '__root__'
     | '/'
+    | '/groups/_layout'
     | '/api/auth/$'
+    | '/groups/_layout/create'
     | '/auth/join/'
     | '/auth/login/'
     | '/auth/signup/'
-    | '/dashboard/parents/'
+    | '/groups/_layout/'
+    | '/dashboard/parents/$groupId/_layout'
+    | '/dashboard/parents/$groupId/_layout/billing'
+    | '/dashboard/parents/$groupId/_layout/settings'
+    | '/dashboard/parents/$groupId/_layout/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  GroupsLayoutRoute: typeof GroupsLayoutRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   AuthJoinIndexRoute: typeof AuthJoinIndexRoute
   AuthLoginIndexRoute: typeof AuthLoginIndexRoute
   AuthSignupIndexRoute: typeof AuthSignupIndexRoute
-  DashboardParentsIndexRoute: typeof DashboardParentsIndexRoute
+  DashboardParentsGroupIdLayoutRoute: typeof DashboardParentsGroupIdLayoutRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -117,12 +190,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/parents/': {
-      id: '/dashboard/parents/'
-      path: '/dashboard/parents'
-      fullPath: '/dashboard/parents/'
-      preLoaderRoute: typeof DashboardParentsIndexRouteImport
+    '/groups/_layout': {
+      id: '/groups/_layout'
+      path: '/groups'
+      fullPath: '/groups'
+      preLoaderRoute: typeof GroupsLayoutRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/groups/_layout/': {
+      id: '/groups/_layout/'
+      path: '/'
+      fullPath: '/groups/'
+      preLoaderRoute: typeof GroupsLayoutIndexRouteImport
+      parentRoute: typeof GroupsLayoutRoute
     }
     '/auth/signup/': {
       id: '/auth/signup/'
@@ -145,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthJoinIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/groups/_layout/create': {
+      id: '/groups/_layout/create'
+      path: '/create'
+      fullPath: '/groups/create'
+      preLoaderRoute: typeof GroupsLayoutCreateRouteImport
+      parentRoute: typeof GroupsLayoutRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -152,16 +239,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/parents/$groupId/_layout': {
+      id: '/dashboard/parents/$groupId/_layout'
+      path: '/dashboard/parents/$groupId'
+      fullPath: '/dashboard/parents/$groupId'
+      preLoaderRoute: typeof DashboardParentsGroupIdLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/parents/$groupId/_layout/': {
+      id: '/dashboard/parents/$groupId/_layout/'
+      path: '/'
+      fullPath: '/dashboard/parents/$groupId/'
+      preLoaderRoute: typeof DashboardParentsGroupIdLayoutIndexRouteImport
+      parentRoute: typeof DashboardParentsGroupIdLayoutRoute
+    }
+    '/dashboard/parents/$groupId/_layout/settings': {
+      id: '/dashboard/parents/$groupId/_layout/settings'
+      path: '/settings'
+      fullPath: '/dashboard/parents/$groupId/settings'
+      preLoaderRoute: typeof DashboardParentsGroupIdLayoutSettingsRouteImport
+      parentRoute: typeof DashboardParentsGroupIdLayoutRoute
+    }
+    '/dashboard/parents/$groupId/_layout/billing': {
+      id: '/dashboard/parents/$groupId/_layout/billing'
+      path: '/billing'
+      fullPath: '/dashboard/parents/$groupId/billing'
+      preLoaderRoute: typeof DashboardParentsGroupIdLayoutBillingRouteImport
+      parentRoute: typeof DashboardParentsGroupIdLayoutRoute
+    }
   }
 }
 
+interface GroupsLayoutRouteChildren {
+  GroupsLayoutCreateRoute: typeof GroupsLayoutCreateRoute
+  GroupsLayoutIndexRoute: typeof GroupsLayoutIndexRoute
+}
+
+const GroupsLayoutRouteChildren: GroupsLayoutRouteChildren = {
+  GroupsLayoutCreateRoute: GroupsLayoutCreateRoute,
+  GroupsLayoutIndexRoute: GroupsLayoutIndexRoute,
+}
+
+const GroupsLayoutRouteWithChildren = GroupsLayoutRoute._addFileChildren(
+  GroupsLayoutRouteChildren,
+)
+
+interface DashboardParentsGroupIdLayoutRouteChildren {
+  DashboardParentsGroupIdLayoutBillingRoute: typeof DashboardParentsGroupIdLayoutBillingRoute
+  DashboardParentsGroupIdLayoutSettingsRoute: typeof DashboardParentsGroupIdLayoutSettingsRoute
+  DashboardParentsGroupIdLayoutIndexRoute: typeof DashboardParentsGroupIdLayoutIndexRoute
+}
+
+const DashboardParentsGroupIdLayoutRouteChildren: DashboardParentsGroupIdLayoutRouteChildren =
+  {
+    DashboardParentsGroupIdLayoutBillingRoute:
+      DashboardParentsGroupIdLayoutBillingRoute,
+    DashboardParentsGroupIdLayoutSettingsRoute:
+      DashboardParentsGroupIdLayoutSettingsRoute,
+    DashboardParentsGroupIdLayoutIndexRoute:
+      DashboardParentsGroupIdLayoutIndexRoute,
+  }
+
+const DashboardParentsGroupIdLayoutRouteWithChildren =
+  DashboardParentsGroupIdLayoutRoute._addFileChildren(
+    DashboardParentsGroupIdLayoutRouteChildren,
+  )
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  GroupsLayoutRoute: GroupsLayoutRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   AuthJoinIndexRoute: AuthJoinIndexRoute,
   AuthLoginIndexRoute: AuthLoginIndexRoute,
   AuthSignupIndexRoute: AuthSignupIndexRoute,
-  DashboardParentsIndexRoute: DashboardParentsIndexRoute,
+  DashboardParentsGroupIdLayoutRoute:
+    DashboardParentsGroupIdLayoutRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

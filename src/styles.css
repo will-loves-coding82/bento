@@ -1,8 +1,24 @@
 @import "tailwindcss";
 @import "@heroui/styles";
 
-:root {
+[data-theme="light"] {
+  /* Override dark theme colors */
   --success: rgb(99, 209, 87);
+}
+
+:root {
+  color-scheme: light;
+  --success: rgb(99, 209, 87);
+  --surface-secondary: rgb(246, 246, 246);
+  --secondary: var(--surface-secondary);
+}
+
+.dark,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --success: rgb(99, 209, 87);
+  --surface-secondary: rgb(35, 35, 35);
+  --secondary:var(--surface-secondary);
 }
 
 @font-face {
@@ -25,15 +41,13 @@ code {
     monospace;
 }
 
-.react-flow {
-  --xy-background-pattern-dots-color-default: rgb(239, 239, 239) !important;
-}
-
+/* .react-flow {
+  --xy-background-pattern-dots-color-default: rgb(109, 109, 109) !important;
+} */
 
 /* ...or add this class to an element */
 .polka {
-  background-image: radial-gradient(rgb(247, 247, 247) 10%, transparent 10%);
+  /* background-image: radial-gradient(var(--surface-secondary), 10%, transparent 10%); */
   background-position: 12px 12px;
   background-size: 24px 24px;
-  background-color: rgb(255, 255, 255);
 }

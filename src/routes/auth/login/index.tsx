@@ -1,8 +1,7 @@
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 import { revalidateLogic, useForm } from '@tanstack/react-form'
 import { Button, Input } from '@heroui/react'
-import { Icon } from "@iconify/react";
-import { authClient } from '@/lib/auth-client';
+import { authClient } from 'convex/auth/auth-client';
 import { toast } from '@heroui/react';
 
 export const Route = createFileRoute('/auth/login/')({
@@ -34,7 +33,7 @@ function LoginRouteComponent() {
 				if (response.error!!) {
 					throw response.error
 				}
-				router.navigate({ to: "/dashboard/parents"})
+				router.navigate({ to: "/groups"})
 			} catch (error: any) {
 				toast("Error", {
 					actionProps: {

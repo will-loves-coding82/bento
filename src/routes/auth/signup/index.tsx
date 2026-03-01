@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
 import { Button, Input } from '@heroui/react'
-import { authClient } from '@/lib/auth-client';
+import { authClient } from 'convex/auth/auth-client';
 import { toast } from '@heroui/react';
 import { useRouter } from '@tanstack/react-router'
 

@@ -1,43 +1,52 @@
 import { Link } from '@tanstack/react-router'
-import { Button, Chip, Skeleton } from '@heroui/react';
+import { Button, Chip, Separator, Skeleton, Surface } from '@heroui/react';
 import '../styles.css';
 import {
   Authenticated,
   Unauthenticated,
   AuthLoading
 } from "convex/react";
+import { useThemeStore } from '@/store/themeStore';
 
 export default function Header() {
+  const { theme, setTheme } = useThemeStore()
 
   return (
-    <nav className="px-4 z-1000 h-[64px] bg-white fixed w-screen flex justify-between items-center text-white shadow-md">
-      <Link to="/" className="font-[chelsea] text-2xl text-black font-semibold">bento</Link>
+    <nav className="flex flex-col z-1000 h-[64px] fixed w-screen">
+      <Surface variant='default' className='inline-flex p-4 gap-8 justify-between shadow-sm'>
 
-      <div className="flex flex-wrap gap-2">
-        <AuthLoading>
-          <div className="w-54">
-            <Skeleton animationType="pulse" className="bg-gray-200 h-4 rounded-lg" />
-          </div>
-        </AuthLoading>
+        <Link to="/" className="font-[chelsea] text-2xl font-semibold">bento</Link>
 
-        <Authenticated>
-          <span className="flex items-center gap-4">
-            <Chip variant="soft" color="success" className="h-fit text-green-400">logged in</Chip>
-            <Button className="rounded-lg font-[chelsea]">
-              <Link to="/dashboard/parents">dashboard</Link>
+        <div className="flex flex-wrap gap-2">
+          <AuthLoading>
+            <div className="w-54">
+              <Skeleton animationType="pulse" className="bg-gray-200 h-4 rounded-lg" />
+            </div>
+          </AuthLoading>
+
+          <Authenticated>
+            <span className="flex items-center gap-4">
+              <Chip variant="soft" color="success" className="h-fit text-green-400">logged in</Chip>
+              <Button className="rounded-lg font-[chelsea]">
+                <Link to="/groups">dashboard</Link>
+              </Button>
+            </span>
+          </Authenticated>
+
+          <Unauthenticated>
+            <Button className="rounded-lg bg-black font-[chelsea]">
+              <Link to="/auth/login">login</Link>
             </Button>
-          </span>
-        </Authenticated>
+            <Button className="rounded-lg font-[chelsea]">
+              <Link to="/auth/signup">signup</Link>
+            </Button>
+          </Unauthenticated>
+        </div>
+      </Surface>
+      {theme === 'dark' && <Separator variant='tertiary' />}
 
-        <Unauthenticated>
-          <Button className="rounded-lg bg-black font-[chelsea]">
-            <Link to="/auth/login">login</Link>
-          </Button>
-          <Button className="rounded-lg font-[chelsea]">
-            <Link to="/auth/signup">signup</Link>
-          </Button>
-        </Unauthenticated>
-      </div>
     </nav>
+
+
   )
 }

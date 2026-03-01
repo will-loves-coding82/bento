@@ -8,7 +8,9 @@
  * @module
  */
 
-import type * as auth from "../auth.js";
+import type * as auth from "../auth/auth.js";
+import type * as functions_app_groups_groups from "../functions/app/groups/groups.js";
+import type * as groups from "../groups.js";
 import type * as http from "../http.js";
 
 import type {
@@ -19,6 +21,8 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  "functions/app/groups/groups": typeof functions_app_groups_groups;
+  groups: typeof groups;
   http: typeof http;
 }>;
 
