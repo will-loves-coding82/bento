@@ -1,33 +1,50 @@
-
-
-import { authClient } from 'convex/auth/auth-client'
+import { authClient } from '@/lib/auth-client'
 import { Select, ListBox, Skeleton, Chip, Dropdown, Avatar, Label, ButtonGroup, Button, Surface, Separator } from '@heroui/react'
-import { Link, Outlet, createFileRoute, useLocation } from '@tanstack/react-router'
+import { Link, Outlet, createFileRoute, redirect, useLocation, useRouter } from '@tanstack/react-router'
 import { api } from 'convex/_generated/api'
 import { Authenticated, AuthLoading } from 'convex/react'
 import { PersonStanding, Settings, Coins, Moon, SunMedium } from 'lucide-react'
 import { useQuery } from "@tanstack/react-query";
 import { convexQuery } from "@convex-dev/react-query";
 import { useThemeStore } from '@/store/themeStore'
+import { useEffect } from 'react'
 
 
 export const Route = createFileRoute('/dashboard/parents/$groupId/_layout')({
   component: PathlessLayoutComponent,
+  beforeLoad: async ({ params, context }) => {
+    const { groupId } = params;
+
+    if (!groupId || groupId == undefined) {
+      throw redirect({ to: "/" });
+    }
+
+    // Fetch the group via TanStack Query + Convex
+    // to ensure it exists in the db
+    const group = await context.queryClient.ensureQueryData(
+      convexQuery(api.groups.getGroupById, { groupId: groupId.toString() })
+    );
+
+    if (!group) {
+      throw redirect({ to: "/" });
+    }
+  },
 })
 
 function PathlessLayoutComponent() {
   const { theme, setTheme } = useThemeStore()
-
+  const router = useRouter()
   const params = Route.useParams()
   const location = useLocation()
   const currentPath = location.href.split("/").slice(-1)[0]
 
   const { data: user } = useQuery(convexQuery(api.auth.getCurrentUser));
-  const displayName = user?.name ?? ""
-  const displayEmail = user?.email ?? "";
+	const displayName = user?.name ?? ""
+	const displayEmail = user?.email ?? "";
 
   const { data: groups } = useQuery(convexQuery(api.groups.getGroups, { ownerId: user ? user._id.toString() : "skip" }))
   const { data: groupData, isLoading: isLoadingGroupData } = useQuery(convexQuery(api.groups.getGroupById, { groupId: params.groupId }))
+
   const { data: subscriptionState } = useQuery({
     queryKey: ["subscription_state"],
     queryFn: async () => {
@@ -44,6 +61,13 @@ function PathlessLayoutComponent() {
     },
   })
 
+  useEffect(() => {
+      if (groups?.length === 0) {
+        router.navigate({ to: "/groups/create" });
+      }
+    }, [groups]);
+  
+
   return (
     <>
       <nav className="flex flex-col z-1000 h-[64px] fixed w-screen">
@@ -51,8 +75,8 @@ function PathlessLayoutComponent() {
           <span className='inline-flex gap-4'>
             <Link to="/" className="font-[chelsea] text-2xl font-semibold">bento</Link>
             {
-              !isLoadingGroupData &&
-              <Select className="w-[180px]" placeholder={groupData!!.name!!} defaultValue={groupData!!._id}>
+              !isLoadingGroupData && groupData  &&
+              <Select className="w-[180px]" placeholder={groupData?.name ?? ""} defaultValue={groupData?._id}>
                 <Select.Trigger className="bg-surface-secondary">
                   <Select.Value />
                   <Select.Indicator />
@@ -129,13 +153,13 @@ function PathlessLayoutComponent() {
                         <ButtonGroup variant='outline' size="sm">
                           <Button
                             onPress={() => setTheme('light')}
-                            className={theme === 'light' ? 'bg-surface-secondary' : ''}
+                            className={theme === 'light' ? 'bg-surface-secondary' : 'text-gray-600'}
                           >
                             <SunMedium />
                           </Button>
                           <Button
                             onPress={() => setTheme('dark')}
-                            className={theme === 'dark' ? 'bg-surface-secondary' : ''}
+                            className={theme === 'dark' ? 'bg-surface-secondary' : 'text-gray-300'}
                           >
                             <Moon />
                           </Button>
@@ -157,9 +181,9 @@ function PathlessLayoutComponent() {
         {theme === 'dark' && <Separator variant='tertiary' />}
       </nav>
 
-      <Surface className="bg-surface-secondary pt-24 px-4 flex flex-row gap-4 h-screen w-screen overflow-hidden">
+      <Surface className="pt-24 px-4 flex flex-row gap-4 h-screen w-screen overflow-hidden">
         <aside className="hidden lg:block h-full w-full max-w-[200px] flex-shrink-0">
-          {isLoadingGroupData ?
+          {isLoadingGroupData || !groupData ?
             <div className="w-full max-w-md space-y-3">
               <Skeleton className="bg-gray-200 h-4 w-full rounded" />
               <Skeleton className="bg-gray-200 h-4 w-5/6 rounded" />
@@ -167,15 +191,15 @@ function PathlessLayoutComponent() {
             </div>
             :
             <nav className="flex flex-col gap-1">
-              <Link to="/dashboard/parents/$groupId" params={{ groupId: groupData!!._id }} className={`flex items-center justify-between px-4 py-2 rounded-xl ${currentPath === params.groupId ? "bg-surface text-foreground" : "text-gray-400"} hover:bg-surface hover:text-foreground transition-colors`}>
+              <Link to="/dashboard/parents/$groupId" params={{ groupId: groupData._id }} className={`flex items-center justify-between px-4 py-2 rounded-xl ${currentPath === params.groupId ? "bg-surface-secondary text-foreground" : "text-gray-400"} hover:bg-surface-secondary hover:text-foreground transition-colors`}>
                 <span className="text-sm font-medium">Home</span>
                 <PersonStanding className="size-4" />
               </Link>
-              <Link to="/dashboard/parents/$groupId/settings" params={{ groupId: groupData!!._id }} className={`flex items-center justify-between px-4 py-2 rounded-xl ${currentPath === "settings" ? "bg-surface text-foreground" : "text-gray-400"} hover:bg-surface hover:text-foreground transition-colors`}>
+              <Link to="/dashboard/parents/$groupId/settings" params={{ groupId: groupData._id }} className={`flex items-center justify-between px-4 py-2 rounded-xl ${currentPath === "settings" ? "bg-surface-secondary text-foreground" : "text-gray-400"} hover:bg-surface-secondary hover:text-foreground transition-colors`}>
                 <span className="text-sm font-medium">Settings</span>
                 <Settings className="size-4" />
               </Link>
-              <Link to="/dashboard/parents/$groupId/billing" params={{ groupId: groupData!!._id }} className={`flex items-center justify-between px-4 py-2 rounded-xl ${currentPath === "billing" ? "bg-surface text-foreground" : "text-gray-400"} hover:bg-surface hover:text-foreground transition-colors`}>
+              <Link to="/dashboard/parents/$groupId/billing" params={{ groupId: groupData._id }} className={`flex items-center justify-between px-4 py-2 rounded-xl ${currentPath === "billing" ? "bg-surface-secondary text-foreground" : "text-gray-400"} hover:bg-surface-secondary hover:text-foreground transition-colors`}>
                 <span className="text-sm font-medium">Billing</span>
                 <Coins className="size-4" />
               </Link>
@@ -183,7 +207,7 @@ function PathlessLayoutComponent() {
           }
         </aside>
 
-        <Surface className={`p-4 lg:px-12 lg:pt-8 w-full h-full bg-surface rounded-t-2xl shadow-sm ${theme === "dark" && "border-2"}`}>
+        <Surface className={`p-4 lg:px-12 lg:pt-4 w-full h-full bg-surface rounded-t-2xl shadow-lg border-primary border-2`}>
           <Outlet />
         </Surface>
       </Surface>

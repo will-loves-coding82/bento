@@ -2,14 +2,14 @@ import { betterAuth } from 'better-auth/minimal'
 import { createClient } from '@convex-dev/better-auth'
 import { convex } from '@convex-dev/better-auth/plugins'
 import authConfig from './auth.config'
-import { components } from '../_generated/api'
-import { mutation, query } from '../_generated/server'
+import { components } from './_generated/api'
+import { query } from './_generated/server'
 import type { GenericCtx } from '@convex-dev/better-auth'
-import type { DataModel } from '../_generated/dataModel'
+import type { DataModel } from './_generated/dataModel'
 import { polar, checkout, portal, usage, webhooks } from "@polar-sh/better-auth"; 
 import { Polar } from "@polar-sh/sdk"; 
-import { admin } from "better-auth/plugins"
-
+import { admin } from 'better-auth/plugins'
+import { ConvexError } from 'convex/values'
 
 const siteUrl = process.env.SITE_URL!
 
@@ -24,7 +24,6 @@ const polarClient = new Polar({
     // Access tokens obtained in Production are for instance not usable in the Sandbox environment.
     server: 'sandbox'
 }); 
-
 
 export const createAuth = (ctx: GenericCtx<DataModel>) => {
   return betterAuth({
@@ -46,7 +45,7 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
     plugins: [
       // The Convex plugin is required for Convex compatibility
       convex({ authConfig }),
-      admin(),
+      // admin(),
       polar({
         client: polarClient,
         createCustomerOnSignUp: true,
@@ -79,6 +78,11 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
 export const getCurrentUser = query({
   args: {},
   handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (identity === null) {
+      throw new ConvexError("Unauthenticated call to getCurrentUser");
+    }
+    
     try {
       return await authComponent.getAuthUser(ctx)
     } catch {
@@ -86,3 +90,4 @@ export const getCurrentUser = query({
     }
   },
 })
+

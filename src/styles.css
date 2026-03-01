@@ -1,16 +1,15 @@
 @import "tailwindcss";
 @import "@heroui/styles";
 
-[data-theme="light"] {
-  /* Override dark theme colors */
-  --success: rgb(99, 209, 87);
-}
 
+/* Overrirde base variables for heroui */
 :root {
   color-scheme: light;
   --success: rgb(99, 209, 87);
   --surface-secondary: rgb(246, 246, 246);
   --secondary: var(--surface-secondary);
+  --border-primary: transparent;
+  --shadow-button: rgb(46, 46, 46);
 }
 
 .dark,
@@ -19,6 +18,19 @@
   --success: rgb(99, 209, 87);
   --surface-secondary: rgb(35, 35, 35);
   --secondary:var(--surface-secondary);
+  --border-primary: rgb(39, 39, 39);
+  --shadow-button: transparent;
+}
+
+@layer components {
+  .border-primary{
+    @apply border-2;
+    border-color: var(--border-primary);
+  }
+
+  .shadow-button {
+    @apply shadow-sm shadow-(--shadow-button);
+  }
 }
 
 @font-face {

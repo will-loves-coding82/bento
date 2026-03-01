@@ -2,7 +2,7 @@ import { revalidateLogic, useForm } from '@tanstack/react-form'
 import { createFileRoute, useRouter, useSearch } from '@tanstack/react-router'
 import { api } from 'convex/_generated/api'
 import { useMutation, useQuery } from 'convex/react'
-import { Button, Input, toast } from '@heroui/react'
+import { Button, Input, Surface, toast } from '@heroui/react'
 
 
 export const Route = createFileRoute('/groups/_layout/create')({
@@ -54,9 +54,9 @@ function CreateGroupComponent() {
 
 
 	return (
-		<section className="polka flex flex-col gap-12 px-4 justify-center items-center bg-white w-screen h-screen">
+		<Surface className="polka flex flex-col gap-12 px-4 justify-center items-center w-screen h-screen">
 			<header className="text-center flex flex-col gap-2">
-				<h1 className="text-4xl font-[chelsea] text-black">Create your group</h1>
+				<h1 className="text-4xl font-[chelsea]">Create your group</h1>
 				<p className="text-gray-400 max-w-xs">Get started by making your first group!</p>
 			</header>
 
@@ -80,7 +80,7 @@ function CreateGroupComponent() {
 								name={field.name}
 								type="text"
 								fullWidth={true}
-								className="bg-gray-100 text-black rounded-lg"
+								className="bg-surface-secondary rounded-lg"
 								placeholder="group name"
 								value={field.state.value}
 								onChange={(e) => field.handleChange(e.target.value)}
@@ -107,6 +107,6 @@ function CreateGroupComponent() {
 					}
 				/>
 			</form>
-		</section>
+		</Surface>
 	)
 }

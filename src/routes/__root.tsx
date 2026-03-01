@@ -1,55 +1,4 @@
-// import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-// import Header from '../components/Header'
-// import appCss from '../styles.css?url'
-// import { Auth0Provider } from '@auth0/auth0-react'
 
-// export const Route = createRootRoute({
-//   head: () => ({
-//     meta: [
-//       {
-//         charSet: 'utf-8',
-//       },
-//       {
-//         name: 'viewport',
-//         content: 'width=device-width, initial-scale=1',
-//       },
-//       {
-//         title: 'Bento Task App',
-//       },
-//     ],
-//     links: [
-//       {
-//         rel: 'stylesheet',
-//         href: appCss,
-//       },
-//     ],
-//   }),
-//   shellComponent: RootDocument,
-// })
-
-// function RootDocument({ children }: { children: React.ReactNode }) {
-//   return (
-//     <html lang="en">
-//       <head>
-//         <HeadContent />
-//       </head>
-
-//        <Auth0Provider
-//         domain={import.meta.env.VITE_AUTH0_DOMAIN}
-//         clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
-//         authorizationParams={{
-//           redirect_uri: window.location.origin
-//         }}
-//       >
-//         <body className="flex flex-col">
-//           <Header />
-//           <section className=" overflow-scroll">{children}</section>
-//           <Scripts />
-//         </body>
-//       </Auth0Provider>
-//     </html>
-//   )
-// }
 
 /// <reference types="vite/client" />
 import {
@@ -64,13 +13,11 @@ import { createServerFn } from '@tanstack/react-start'
 import { ConvexBetterAuthProvider } from '@convex-dev/better-auth/react'
 import type { ConvexQueryClient } from '@convex-dev/react-query'
 import type { QueryClient } from '@tanstack/react-query'
-import appCss from '@/styles.css?url'
-import { getToken } from 'convex/auth/auth-server'
-import { authClient } from 'convex/auth/auth-client'
+import appCss from '../styles.css?url'
+import { authClient } from '@/lib/auth-client'
+import { getToken } from '@/lib/auth-server'
 import { Toast } from '@heroui/react'
 import { useThemeStore } from '@/store/themeStore'
-import { useEffect } from 'react'
-
 
 // Get auth information for SSR using available cookies
 const getAuth = createServerFn({ method: 'GET' }).handler(async () => {
@@ -134,7 +81,7 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   const theme = useThemeStore((s) => s.theme)
-  useEffect(() => {
+  React.useEffect(() => {
     document.documentElement.classList.remove('light', 'dark')
     document.documentElement.classList.add(theme)
   }, [theme])

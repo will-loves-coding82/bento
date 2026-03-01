@@ -1,28 +1,60 @@
-import { Skeleton, Chip, Dropdown, Avatar, Label, ButtonGroup, Button, ListBox, Select, Separator, Surface } from '@heroui/react';
-import { createFileRoute, Link, Outlet } from '@tanstack/react-router'
+import { Skeleton, Dropdown, Avatar, Label, ButtonGroup, Button, Separator, Surface } from '@heroui/react';
+import { createFileRoute, Link, Outlet, redirect, useRouteContext } from '@tanstack/react-router'
 import { api } from 'convex/_generated/api';
 import { Authenticated, AuthLoading } from 'convex/react';
 import { SunMedium, Moon } from 'lucide-react';
-import { useQuery } from "@tanstack/react-query";
 import { convexQuery } from "@convex-dev/react-query";
 import { useThemeStore } from '@/store/themeStore';
 
-
+/**
+ * Layout route for the groups section.
+ * 
+ * Ensures the user is authenticated before accessing any groups pages.
+ * If the user is not logged in, redirects to the login page.
+ * For non-create routes, fetches the user's groups and redirects to group creation if no groups exist.
+ * 
+ * @route /groups/_layout
+ * @returns {Object} An object containing the authenticated user
+ * @throws {redirect} Redirects to "/auth/login" if user is not authenticated
+ * @throws {redirect} Redirects to "/groups/create" if user has no groups (except on create route)
+ */
 export const Route = createFileRoute('/groups/_layout')({
-	component: RouteComponent,
+	beforeLoad: async ({ context, location }) => {
+
+		const user = await context.queryClient.ensureQueryData(
+			convexQuery(api.auth.getCurrentUser)
+		)
+		if (!user) {
+			throw redirect({ to: "/auth/login" })
+		}
+
+		if (location.pathname === '/groups/create') {
+			return { user }
+		}
+
+		const groups = await context.queryClient.ensureQueryData(
+			convexQuery(api.groups.getGroups, { ownerId: user!!._id })
+		);
+		if (groups.length == 0) {
+			throw redirect({ to: "/groups/create" })
+		}
+
+		return { user }
+	},
+	component: RouteComponent
 })
 
 function RouteComponent() {
 	const { theme, setTheme } = useThemeStore()
-	const { data: user} = useQuery(convexQuery(api.auth.getCurrentUser));
+	const { user: initialUser } = useRouteContext({ from: '/groups/_layout' })
 
-	const displayName = user?.name ?? ""
-	const displayEmail = user?.email ?? "";
+	const displayName = initialUser?.name ?? ""
+	const displayEmail = initialUser?.email ?? "";
 
 	return (
 		<>
-			 <nav className="flex flex-col z-1000 h-[64px] fixed w-screen">
-      	<Surface variant='default' className='inline-flex p-4 gap-8 justify-between shadow-sm'>
+			<nav className="flex flex-col z-1000 h-[64px] fixed w-screen">
+				<Surface variant='default' className='inline-flex p-4 gap-8 justify-between shadow-sm'>
 					<Link to="/" className="font-[chelsea] text-2xl font-semibold">bento</Link>
 
 					<div className="flex flex-wrap gap-2">
@@ -38,7 +70,7 @@ function RouteComponent() {
 										<Avatar size="sm">
 											<Avatar.Image
 												alt={displayName}
-												src={user?.image ?? "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"}
+												src={initialUser?.image ?? "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"}
 											/>
 											<Avatar.Fallback delayMs={600}>
 												{displayName.slice(0, 2).toUpperCase()}
@@ -51,7 +83,7 @@ function RouteComponent() {
 												<Avatar size="sm">
 													<Avatar.Image
 														alt={displayName}
-														src={user?.image ?? "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"}
+														src={initialUser?.image ?? "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"}
 													/>
 													<Avatar.Fallback delayMs={600}>
 														{displayName.slice(0, 2).toUpperCase()}
@@ -104,7 +136,7 @@ function RouteComponent() {
 				{theme === 'dark' && <Separator variant='tertiary' />}
 			</nav>
 
-      <Surface variant='default' className="px-4 flex flex-row gap-4 h-screen w-screen overflow-hidden">
+			<Surface variant='default' className="px-4 flex flex-row gap-4 h-screen w-screen overflow-hidden">
 				<Outlet />
 			</Surface>
 		</>

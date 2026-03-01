@@ -1,10 +1,14 @@
 import { mutation, query } from "convex/_generated/server";
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 
 
 export const getGroupById = query({
     args: { groupId: v.string() },
     handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (identity === null) {
+            throw new ConvexError("Unauthenticated call to getGroupById");
+        }
         if (args.groupId == undefined) {
             return null
         }
@@ -19,6 +23,10 @@ export const getGroupById = query({
 export const getGroups = query({
     args: { ownerId: v.string() },
     handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (identity === null) {
+            throw new ConvexError("Unauthenticated call to getGroups");
+        }
         if (args.ownerId == undefined) {
             return []
         }
@@ -34,10 +42,15 @@ export const createGroup = mutation({
         ownerId: v.string(),
         name: v.string()
     },
-    handler: async(ctx, args) => {
-        const groupId =  await ctx.db
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (identity === null) {
+            throw new ConvexError("Unauthenticated call to createGroup");
+        }
+
+        const groupId = await ctx.db
             .insert("groups", {
-                owner_id: args.ownerId, 
+                owner_id: args.ownerId,
                 name: args.name,
                 members: []
             })

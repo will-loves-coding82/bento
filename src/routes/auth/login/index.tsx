@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 import { revalidateLogic, useForm } from '@tanstack/react-form'
 import { Button, Input } from '@heroui/react'
-import { authClient } from 'convex/auth/auth-client';
+import { authClient } from '@/lib/auth-client';
 import { toast } from '@heroui/react';
 
 export const Route = createFileRoute('/auth/login/')({

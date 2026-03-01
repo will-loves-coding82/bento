@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GroupsLayoutRouteImport } from './routes/groups/_layout'
 import { Route as GroupsLayoutIndexRouteImport } from './routes/groups/_layout/index'
+import { Route as DashboardParentsIndexRouteImport } from './routes/dashboard/parents/index'
 import { Route as AuthSignupIndexRouteImport } from './routes/auth/signup/index'
 import { Route as AuthLoginIndexRouteImport } from './routes/auth/login/index'
 import { Route as AuthJoinIndexRouteImport } from './routes/auth/join/index'
@@ -36,6 +37,11 @@ const GroupsLayoutIndexRoute = GroupsLayoutIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => GroupsLayoutRoute,
+} as any)
+const DashboardParentsIndexRoute = DashboardParentsIndexRouteImport.update({
+  id: '/dashboard/parents/',
+  path: '/dashboard/parents/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthSignupIndexRoute = AuthSignupIndexRouteImport.update({
   id: '/auth/signup/',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/auth/join/': typeof AuthJoinIndexRoute
   '/auth/login/': typeof AuthLoginIndexRoute
   '/auth/signup/': typeof AuthSignupIndexRoute
+  '/dashboard/parents/': typeof DashboardParentsIndexRoute
   '/groups/': typeof GroupsLayoutIndexRoute
   '/dashboard/parents/$groupId': typeof DashboardParentsGroupIdLayoutRouteWithChildren
   '/dashboard/parents/$groupId/billing': typeof DashboardParentsGroupIdLayoutBillingRoute
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/auth/join': typeof AuthJoinIndexRoute
   '/auth/login': typeof AuthLoginIndexRoute
   '/auth/signup': typeof AuthSignupIndexRoute
+  '/dashboard/parents': typeof DashboardParentsIndexRoute
   '/groups': typeof GroupsLayoutIndexRoute
   '/dashboard/parents/$groupId/billing': typeof DashboardParentsGroupIdLayoutBillingRoute
   '/dashboard/parents/$groupId/settings': typeof DashboardParentsGroupIdLayoutSettingsRoute
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   '/auth/join/': typeof AuthJoinIndexRoute
   '/auth/login/': typeof AuthLoginIndexRoute
   '/auth/signup/': typeof AuthSignupIndexRoute
+  '/dashboard/parents/': typeof DashboardParentsIndexRoute
   '/groups/_layout/': typeof GroupsLayoutIndexRoute
   '/dashboard/parents/$groupId/_layout': typeof DashboardParentsGroupIdLayoutRouteWithChildren
   '/dashboard/parents/$groupId/_layout/billing': typeof DashboardParentsGroupIdLayoutBillingRoute
@@ -138,6 +147,7 @@ export interface FileRouteTypes {
     | '/auth/join/'
     | '/auth/login/'
     | '/auth/signup/'
+    | '/dashboard/parents/'
     | '/groups/'
     | '/dashboard/parents/$groupId'
     | '/dashboard/parents/$groupId/billing'
@@ -151,6 +161,7 @@ export interface FileRouteTypes {
     | '/auth/join'
     | '/auth/login'
     | '/auth/signup'
+    | '/dashboard/parents'
     | '/groups'
     | '/dashboard/parents/$groupId/billing'
     | '/dashboard/parents/$groupId/settings'
@@ -164,6 +175,7 @@ export interface FileRouteTypes {
     | '/auth/join/'
     | '/auth/login/'
     | '/auth/signup/'
+    | '/dashboard/parents/'
     | '/groups/_layout/'
     | '/dashboard/parents/$groupId/_layout'
     | '/dashboard/parents/$groupId/_layout/billing'
@@ -178,6 +190,7 @@ export interface RootRouteChildren {
   AuthJoinIndexRoute: typeof AuthJoinIndexRoute
   AuthLoginIndexRoute: typeof AuthLoginIndexRoute
   AuthSignupIndexRoute: typeof AuthSignupIndexRoute
+  DashboardParentsIndexRoute: typeof DashboardParentsIndexRoute
   DashboardParentsGroupIdLayoutRoute: typeof DashboardParentsGroupIdLayoutRouteWithChildren
 }
 
@@ -203,6 +216,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/groups/'
       preLoaderRoute: typeof GroupsLayoutIndexRouteImport
       parentRoute: typeof GroupsLayoutRoute
+    }
+    '/dashboard/parents/': {
+      id: '/dashboard/parents/'
+      path: '/dashboard/parents'
+      fullPath: '/dashboard/parents/'
+      preLoaderRoute: typeof DashboardParentsIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/auth/signup/': {
       id: '/auth/signup/'
@@ -312,6 +332,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthJoinIndexRoute: AuthJoinIndexRoute,
   AuthLoginIndexRoute: AuthLoginIndexRoute,
   AuthSignupIndexRoute: AuthSignupIndexRoute,
+  DashboardParentsIndexRoute: DashboardParentsIndexRoute,
   DashboardParentsGroupIdLayoutRoute:
     DashboardParentsGroupIdLayoutRouteWithChildren,
 }
